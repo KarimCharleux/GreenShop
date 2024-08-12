@@ -27,6 +27,7 @@ const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
   );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [dots, setDots] = useState<number>(1);
 
   useEffect(() => {
     console.log("CarbonFootprint component rendered with item:", item);
@@ -72,11 +73,23 @@ const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
     };
   }, [item]);
 
+  // Effet pour gérer l'animation des points
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots((prevDots) => (prevDots % 3) + 1);
+    }, 500); // Change every 500ms
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
+
   if (loading) {
     return (
       <div style={overlayStyles}>
         <div style={modalStyles}>
-          <h2 style={h2Styles}>Loading Carbon Footprint...</h2>
+          <h2 style={h2Styles}>
+            Loading Carbon Footprint
+            {".".repeat(dots)}
+          </h2>
         </div>
       </div>
     );
