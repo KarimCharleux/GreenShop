@@ -43,6 +43,8 @@ router.post("/calculate-carbon-footprint", async (req, res) => {
       },
     });
 
+    console.log("API Response:", response.data);
+
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error calculating carbon emissions:", error);

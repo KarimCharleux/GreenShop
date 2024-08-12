@@ -15,15 +15,15 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 root.render(
-  <React.StrictMode>
-    <CurrencyProvider>
-      <LanguageProvider>
-        <Theme appearance={"light"} accentColor={"green"}>
-          <App />
-        </Theme>
-      </LanguageProvider>
-    </CurrencyProvider>
-  </React.StrictMode>,
+  //<React.StrictMode>
+  <CurrencyProvider>
+    <LanguageProvider>
+      <Theme appearance={"light"} accentColor={"green"}>
+        <App />
+      </Theme>
+    </LanguageProvider>
+  </CurrencyProvider>,
+  //</React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

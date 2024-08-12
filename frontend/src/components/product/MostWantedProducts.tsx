@@ -3,10 +3,12 @@ import "./MostWantedProducts.scss";
 import axios from "axios";
 import { Item } from "../../interfaces/Item";
 import Product from "./Product";
+import CarbonFootprint from "./CarbonFootprint";
 import { useTranslation } from "react-i18next";
 
 function MostWantedProducts() {
   const [items, setItems] = useState<Item[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -32,8 +34,18 @@ function MostWantedProducts() {
         console.error("Error fetching items:", error);
       }
     };
-    fetchItems().then(() => {});
+
+    // Fetch existing items
+    fetchItems();
   }, []);
+
+  const handleCompareFootprint = (item: Item) => {
+    setSelectedItem(item);
+  };
+
+  const handleCloseCarbonFootprint = () => {
+    setSelectedItem(null);
+  };
 
   if (items.length === 0) {
     return null;
@@ -45,9 +57,20 @@ function MostWantedProducts() {
       <p className="section-subtitle">{t("product.mostWantedSub")}</p>
       <div className="grid grid-cols-4 grid-rows-1 gap-6 w-full max-xl:grid-cols-2 max-xl:grid-rows-2 max-md:grid-rows-4 max-md:grid-cols-1">
         {items.map((item: any, index: number) => (
-          <Product item={item} key={index} />
+          <div key={index}>
+            <Product item={item} />
+            <button onClick={() => handleCompareFootprint(item)}>
+              Compare Footprint
+            </button>
+          </div>
         ))}
       </div>
+      {selectedItem && (
+        <CarbonFootprint
+          item={selectedItem}
+          onClose={handleCloseCarbonFootprint}
+        />
+      )}
     </section>
   );
 }

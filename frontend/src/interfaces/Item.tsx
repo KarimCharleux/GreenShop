@@ -12,6 +12,11 @@ export interface Item {
   modifiedAt: string;
   labels: Label[];
   greenScore: string;
+  weight_value: number;
+  weight_unit: string;
+  distance_value: number;
+  distance_unit: string;
+  transport_method: string;
 }
 
 export interface Label {
