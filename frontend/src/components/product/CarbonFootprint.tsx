@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import axios from "axios"; // Commenting out the API call for now
+import axios from "axios";
 import { Item } from "../../interfaces/Item";
 
 interface CarbonFootprintProps {
@@ -7,49 +7,93 @@ interface CarbonFootprintProps {
   onClose: () => void;
 }
 
+// Définition d'une interface pour les attributs de la réponse
+interface CarbonDataAttributes {
+  carbon_g: number;
+  carbon_kg: number;
+  carbon_lb: number;
+  carbon_mt: number;
+  distance_unit: string;
+  distance_value: number;
+  estimated_at: string;
+  transport_method: string;
+  weight_unit: string;
+  weight_value: number;
+}
+
 const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
-  const [carbonData, setCarbonData] = useState<any>(null);
+  const [carbonData, setCarbonData] = useState<CarbonDataAttributes | null>(
+    null,
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("CarbonFootprint component rendered with item:", item);
 
-    // Disable scrolling on body when the modal is open
+    // Désactiver le défilement lorsque la pop-up est ouverte
     document.body.style.overflow = "hidden";
 
-    const mockCarbonData = {
-      carbon_g: 1280,
-      carbon_kg: 1.28,
-      carbon_lb: 2.82,
-      carbon_mt: 0,
-      distance_unit: "km",
-      distance_value: 2000,
-      estimated_at: "2024-08-12T01:44:23.186Z",
-      transport_method: "truck",
-      weight_unit: "kg",
-      weight_value: 10,
+    const fetchCarbonData = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/api/carbon/calculate-carbon-footprint`,
+          {
+            weight_value: item.weight_value,
+            weight_unit: item.weight_unit || "kg",
+            distance_value: item.distance_value,
+            distance_unit: item.distance_unit || "km",
+            transport_method: item.transport_method || "truck",
+          },
+        );
+        console.log("API response:", response.data);
+
+        // Vérifier la structure de la réponse et extraire les attributs
+        const attributes = response.data?.data?.attributes;
+        if (attributes) {
+          setCarbonData(attributes);
+        } else {
+          setError("Unexpected API response structure.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch carbon footprint data:", err);
+        setError("Failed to fetch carbon footprint data.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // Simulate an API call with a timeout
-    setTimeout(() => {
-      console.log("Mocked API response:", mockCarbonData);
-      setCarbonData(mockCarbonData);
-      setLoading(false);
-    }, 1000);
+    // Appeler la fonction pour récupérer les données de l'API
+    fetchCarbonData();
 
-    // Cleanup on component unmount
+    // Nettoyage lors du démontage du composant
     return () => {
-      document.body.style.overflow = "auto"; // Re-enable scrolling when modal is closed
+      document.body.style.overflow = "auto"; // Réactiver le défilement lorsque la pop-up est fermée
     };
   }, [item]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={overlayStyles}>
+        <div style={modalStyles}>
+          <h2 style={h2Styles}>Loading Carbon Footprint...</h2>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div style={overlayStyles}>
+        <div style={modalStyles}>
+          <h2 style={h2Styles}>Error</h2>
+          <p>{error}</p>
+          <button onClick={onClose} style={closeButtonStyles}>
+            Close
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -60,12 +104,17 @@ const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
         {carbonData ? (
           <div style={contentStyles}>
             <p>
-              Distance: {carbonData.distance_value} {carbonData.distance_unit}
+              <strong>Distance:</strong> {carbonData.distance_value}{" "}
+              {carbonData.distance_unit}
             </p>
-            <p>Transport Method: {carbonData.transport_method}</p>
             <p>
-              Weight: {carbonData.weight_value} {carbonData.weight_unit}
+              <strong>Transport Method:</strong> {carbonData.transport_method}
             </p>
+            <p>
+              <strong>Weight:</strong> {carbonData.weight_value}{" "}
+              {carbonData.weight_unit}
+            </p>
+
             <h3 style={h3Styles}>Carbon Footprint: {carbonData.carbon_g} g</h3>
           </div>
         ) : (
