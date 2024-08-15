@@ -1,4 +1,3 @@
-// Product.tsx
 import React, { useState } from "react";
 import "./Product.scss";
 import { Item } from "../../interfaces/Item";
@@ -15,6 +14,7 @@ import {
 } from "@radix-ui/themes";
 import Logo from "../../assets/Logo";
 import { useTranslation } from "react-i18next";
+import CarbonFootprint from "./CarbonFootprint";
 
 interface ProductProps {
   item: Item;
@@ -22,7 +22,16 @@ interface ProductProps {
 
 const Product: React.FC<ProductProps> = ({ item }) => {
   const [imageLoading, setImageLoading] = useState(true);
+  const [showCarbonFootprint, setShowCarbonFootprint] = useState(false);
   const { t } = useTranslation();
+
+  const handleCompareFootprint = () => {
+    setShowCarbonFootprint(true);
+  };
+
+  const handleCloseCarbonFootprint = () => {
+    setShowCarbonFootprint(false);
+  };
 
   return (
     <article className="product">
@@ -143,7 +152,16 @@ const Product: React.FC<ProductProps> = ({ item }) => {
             </HoverCard.Root>
           </div>
         </span>
+        <button
+          onClick={handleCompareFootprint}
+          className="compare-footprint-btn"
+        >
+          Compare Footprint
+        </button>
       </div>
+      {showCarbonFootprint && (
+        <CarbonFootprint item={item} onClose={handleCloseCarbonFootprint} />
+      )}
     </article>
   );
 };

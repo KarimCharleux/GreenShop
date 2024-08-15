@@ -3,13 +3,11 @@ import "./MostWantedProducts.scss";
 import axios from "axios";
 import { Item } from "../../interfaces/Item";
 import Product from "./Product";
-import CarbonFootprint from "./CarbonFootprint";
 import { useTranslation } from "react-i18next";
 
 function MostWantedProducts() {
   const [items, setItems] = useState<Item[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const itemsPerPage = 4;
   const { t } = useTranslation();
 
@@ -39,14 +37,6 @@ function MostWantedProducts() {
 
     fetchItems();
   }, []);
-
-  const handleCompareFootprint = (item: Item) => {
-    setSelectedItem(item);
-  };
-
-  const handleCloseCarbonFootprint = () => {
-    setSelectedItem(null);
-  };
 
   const handleNextPage = () => {
     if ((currentPage + 1) * itemsPerPage < items.length) {
@@ -80,12 +70,7 @@ function MostWantedProducts() {
         )}
         <div className="grid grid-cols-4 grid-rows-1 gap-6 flex-grow max-xl:grid-cols-2 max-xl:grid-rows-2 max-md:grid-rows-4 max-md:grid-cols-1">
           {paginatedItems.map((item: any, index: number) => (
-            <div key={index}>
-              <Product item={item} />
-              <button onClick={() => handleCompareFootprint(item)}>
-                Compare Footprint
-              </button>
-            </div>
+            <Product key={index} item={item} />
           ))}
         </div>
         {(currentPage + 1) * itemsPerPage < items.length && (
@@ -97,12 +82,6 @@ function MostWantedProducts() {
           />
         )}
       </div>
-      {selectedItem && (
-        <CarbonFootprint
-          item={selectedItem}
-          onClose={handleCloseCarbonFootprint}
-        />
-      )}
     </section>
   );
 }

@@ -20,3 +20,24 @@
   align-self: center;
   margin: 2rem 0;
 }
+.navigation-arrow {
+  transition: transform 0.3s ease-in-out;
+  width: 70px; // Ajustez la largeur des flèches
+  height: auto; // Conservez le ratio d'aspect
+  cursor: pointer; // Indiquez que l'image est cliquable
+  position: absolute; // Position absolue pour que les flèches se superposent correctement
+  top: -75px; // Centrage vertical
+  z-index: 1; // Assurez-vous que les flèches apparaissent au-dessus des autres éléments
+}
+
+.previous-arrow {
+  left: 10px; // Positionnement de la flèche précédente
+}
+
+.next-arrow {
+  right: 10px; // Positionnement de la flèche suivante
+}
+
+.navigation-arrow:hover {
+  transform: scale(1.2); // Agrandit l'image au survol et ajuste le centrage
+}
