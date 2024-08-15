@@ -101,3 +101,21 @@
     object-fit: cover;
   }
 }
+
+.compare-footprint-btn {
+  display: block; /* Assure que le bouton prend toute la largeur disponible */
+  margin: 10px auto; /* Centre le bouton horizontalement */
+  padding: 10px 15px;
+  border: 1px solid rgba(0, 0, 0, 0.700); /* Contour noir */
+  border-radius: 25px; /* Bords arrondis */
+  background-color: lighten($primary-color, 5%); /* Fond vert clair (variable) */
+  color: white; /* Couleur de texte blanche */
+  cursor: pointer; /* Change le curseur pour pointer sur hover */
+  text-align: center; /* Centre le texte à l'intérieur du bouton */
+  font-size: 15px; /* Taille de la police */
+  font-weight: bold; /* Texte en gras */
+  
+  &:hover {
+    background-color: $primary-color; /* Légère variation de couleur au survol */
+  }
+}

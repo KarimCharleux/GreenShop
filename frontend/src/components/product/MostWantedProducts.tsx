@@ -19,7 +19,12 @@ function MostWantedProducts() {
         );
         const items: Item[] = response.data;
         if (items.length > 0) {
-          items.sort((a, b) => b.rate - a.rate);
+          items.sort((a, b) => {
+            if (b.rate !== a.rate) {
+              return b.rate - a.rate;
+            }
+            return b.rateCount - a.rateCount;
+          });
           const filteredItems = items.filter((item) => {
             try {
               require(`../../assets/products/${item.image}`);
