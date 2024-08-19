@@ -10,14 +10,8 @@ COPY package*.json ./
 # Installer les dépendances de l'application
 RUN npm install
 
-# Copier le reste du code de l'application
-COPY . .
-
-# Construire l'application
-RUN npm run build
-
 # Exposer le port sur lequel l'application s'exécute
 EXPOSE 3000
 
-# Démarrer l'application
-CMD ["npm", "run", "start"]
+# Démarrer l'application en mode développement
+CMD ["npm", "run", "dev"]
