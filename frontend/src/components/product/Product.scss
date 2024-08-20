@@ -119,3 +119,16 @@
     background-color: $primary-color; /* Légère variation de couleur au survol */
   }
 }
+
+.added-to-cart-message {
+  position: absolute; /* Utilisez position absolue pour pouvoir ajuster facilement la position */
+  bottom: -30px; /* Ajustez cette valeur pour descendre le message */
+  left: 50%; /* Centrer horizontalement */
+  transform: translateX(-50%); /* Ajuster pour centrer parfaitement */
+  background-color: rgba(0, 0, 0, 0.8); /* Couleur de fond légèrement transparente */
+  color: #fff; /* Couleur du texte */
+  padding: 10px 15px; /* Espacement interne */
+  border-radius: 5px; /* Coins arrondis */
+  font-size: 14px; /* Taille de la police */
+  white-space: nowrap; /* Empêcher le texte de se couper sur plusieurs lignes */
+}

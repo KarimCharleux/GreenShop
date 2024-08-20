@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Header.scss";
 import Logo from "../../assets/Logo";
-import {Box, Flex, Separator, TextField} from "@radix-ui/themes";
-import {MagnifyingGlassIcon} from "@radix-ui/react-icons";
+import { Box, Flex, Separator, TextField } from "@radix-ui/themes";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import LanguagesCurrencyDialog from "./LanguagesCurrencyDialog";
 import NavigationExpanded from "./NavigationExpanded";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
+
+  const [cartCount, setCartCount] = useState(0);
+
+  const updateCartCount = () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartCount(cart.length);
+  };
+
+  useEffect(() => {
+    updateCartCount();
+
+    // Mettre à jour le cart number lorsque l'événement est déclenché
+    const handleCartUpdated = () => {
+      updateCartCount();
+    };
+
+    window.addEventListener("cartUpdated", handleCartUpdated);
+
+    return () => {
+      window.removeEventListener("cartUpdated", handleCartUpdated);
+    };
+  }, []);
 
   function showMenu(event: React.MouseEvent<HTMLDivElement>) {
     const menuButton = event.currentTarget;
@@ -66,7 +88,7 @@ const Header: React.FC = () => {
                 d="M9.49962 10.4984V9.68251C9.49962 6.2265 12.2477 2.79466 15.8182 2.46034C19.9866 2.05699 23.4996 5.3409 23.4996 9.42917V10.4984C25.5731 10.719 27.0573 11.3827 28.0017 12.5055C29.1727 13.8977 29.2823 15.7274 29.0937 17.4325L29.092 17.4465L28.0931 25.438C27.9456 26.8064 27.6004 28.3051 26.3792 29.4208C25.1643 30.5307 23.2822 31.0825 20.4997 31.0825H12.4997C9.71725 31.0825 7.83509 30.5307 6.62023 29.4208C5.39897 28.3051 5.05377 26.8063 4.90636 25.4379L3.90744 17.4465L3.90578 17.4325C3.71711 15.7274 3.82674 13.8977 4.99777 12.5055C5.94215 11.3827 7.42629 10.719 9.49962 10.4984ZM16.0095 4.45117C18.987 4.16231 21.4996 6.5047 21.4996 9.42917V10.4158H11.4996V9.68251C11.4996 7.1391 13.5773 4.67818 16.0059 4.45151L16.0095 4.45117ZM6.892 25.1985L5.89289 17.2056C5.72285 15.6609 5.9003 14.5395 6.52833 13.7929C7.14778 13.0564 8.4371 12.4158 11.1664 12.4158H21.833C24.5623 12.4158 25.8517 13.0564 26.4711 13.7929C27.0991 14.5395 27.2766 15.6608 27.1066 17.2055L26.1074 25.1985L26.1054 25.216C25.9723 26.4585 25.6963 27.3357 25.0302 27.9442C24.3551 28.561 23.0772 29.0825 20.4997 29.0825H12.4997C9.92218 29.0825 8.64435 28.561 7.9692 27.9442C7.30312 27.3357 7.02716 26.4585 6.89403 25.216L6.892 25.1985Z"
               />
             </svg>
-            <p className="cartNumber">0</p>
+            <p className="cartNumber">{cartCount}</p>
           </a>
           <a href="/favorite" className="header-button">
             <svg

@@ -23,6 +23,7 @@ interface ProductProps {
 const Product: React.FC<ProductProps> = ({ item }) => {
   const [imageLoading, setImageLoading] = useState(true);
   const [showCarbonFootprint, setShowCarbonFootprint] = useState(false);
+  const [showAddedMessage, setShowAddedMessage] = useState(false);
   const { t } = useTranslation();
 
   const handleCompareFootprint = () => {
@@ -31,6 +32,20 @@ const Product: React.FC<ProductProps> = ({ item }) => {
 
   const handleCloseCarbonFootprint = () => {
     setShowCarbonFootprint(false);
+  };
+
+  const handleAddToCart = () => {
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    cart.push(item);
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    setShowAddedMessage(true);
+    setTimeout(() => {
+      setShowAddedMessage(false);
+    }, 2000);
+
+    const event = new CustomEvent("cartUpdated");
+    window.dispatchEvent(event);
   };
 
   return (
@@ -50,7 +65,12 @@ const Product: React.FC<ProductProps> = ({ item }) => {
               {/* SVG path */}
             </svg>
           </button>
-          <button className="product-btn-add">{t("product.btn.add")}</button>
+          <button className="product-btn-add" onClick={handleAddToCart}>
+            {t("product.btn.add")}
+          </button>
+          {showAddedMessage && (
+            <p className="added-to-cart-message">{t("product.addedToCart")}</p>
+          )}
         </div>
       </Skeleton>
       <div className="product-content">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 // import axios from "axios"; // Commenter cette ligne pour éviter l'appel API réel
 import { Item } from "../../interfaces/Item";
 import { relative } from "path";
+import { useTranslation } from "react-i18next";
 
 interface CarbonFootprintProps {
   item: Item;
@@ -29,6 +30,8 @@ const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [dots, setDots] = useState<number>(1);
+  const [showAddedMessage, setShowAddedMessage] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("CarbonFootprint component rendered with item:", item);
@@ -107,9 +110,18 @@ const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
   }, []);
 
   const handlePurchaseClick = () => {
-    // Remplacez cette ligne par votre logique d'achat réelle
-    alert(`Purchasing ${item.name}`);
-    // Vous pouvez rediriger vers une page de paiement, ouvrir un modal d'achat, etc.
+    // Ajouter l'item au localStorage
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    cart.push(item);
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Afficher le message de confirmation
+    setShowAddedMessage(true);
+
+    // Masquer le message après 2 secondes
+    setTimeout(() => setShowAddedMessage(false), 2000);
+    const event = new CustomEvent("cartUpdated");
+    window.dispatchEvent(event);
   };
 
   if (loading) {
@@ -182,6 +194,11 @@ const CarbonFootprint: React.FC<CarbonFootprintProps> = ({ item, onClose }) => {
                     style={purchaseImageStyles}
                   />
                 </button>
+                {showAddedMessage && (
+                  <p style={addedToCartMessageStyles}>
+                    {t("product.addedToCart")}
+                  </p>
+                )}
               </>
             ) : (
               <p>No data available</p>
@@ -269,7 +286,7 @@ const infoContainerStyles: React.CSSProperties = {
 };
 
 const purchaseButtonStyles: React.CSSProperties = {
-  marginTop: "16px",
+  marginTop: "10px",
   padding: "5px 20px",
   backgroundColor: "rgba(76, 175, 80, 0.9)", // Green background color
   color: "#fff", // White text
@@ -324,6 +341,20 @@ const separatorStyles: React.CSSProperties = {
 
 const paragraphStyles: React.CSSProperties = {
   marginBottom: "25px", // Adjust the margin as needed
+};
+
+const addedToCartMessageStyles: React.CSSProperties = {
+  position: "absolute",
+  bottom: "20px", // Ajustez cette valeur pour la position verticale
+  left: "50%",
+  transform: "translateX(-50%)",
+  backgroundColor: "rgba(0, 0, 0, 0.8)",
+  color: "#fff",
+  padding: "10px 15px",
+  borderRadius: "5px",
+  fontSize: "14px",
+  whiteSpace: "nowrap",
+  zIndex: 1002, // Assurez-vous que le message est au-dessus des autres éléments
 };
 
 export default CarbonFootprint;
