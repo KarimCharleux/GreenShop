@@ -30,7 +30,13 @@ const Blog: React.FC = () => {
       <TopNavHeader selected={NavOption.Blog} />
       <main className="mx-auto w-full max-w-3xl flex-col space-y-16 px-4 lg:px-0 my-20">
         <div className="flex justify-center items-center flex-col gap-10">
-          <Logo iconOnly={false} textOnly={false} size={65} color="#29AC00" />
+          <Logo
+            iconOnly={false}
+            textOnly={false}
+            size={65}
+            color="#29AC00"
+            text="shop"
+          />
           <h2 className="text-green-600">Your Daily Dose of Eco-Inspiration</h2>
         </div>
         {!posts && "You must add at least one Post to your Bucket"}
